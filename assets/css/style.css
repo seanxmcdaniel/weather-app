@@ -1,0 +1,33 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: rgb(208, 208, 208);
+}
+
+.btn {
+    background-color: rgb(143, 143, 214);
+    color:black;
+    border-radius: 5px;
+}
+
+.city-input {
+    padding: 10px;
+}
+
+.jumbotron {
+    background-color: rgb(143, 143, 214);
+}
+
+
+.dashboard {
+    height: 100vh;
+}
+
+.display-weather, .search-city {
+    border: 1px solid black;
+    padding: 6px;
+}
