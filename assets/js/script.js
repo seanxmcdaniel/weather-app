@@ -1,48 +1,38 @@
-var apiKey = '26ba3a7e283acb9cd1e8665c6c3b319a';
+var apiKey = '&appid=f0a76216a017bee3d32ef15e6dbaf4e7'
 var openWeatherUrl = 'https://api.openweathermap.org/data/2.5/weather?q=';
-var oneCallUrl = 'https://api.openweathermap.org/data/2.5/onecall?lat='
-var formEl = $('#city-search');
-var col2El = $('.col2');
-var city = $('#city');
-var fiveDayEl = $('#five-day');
-var searchHistoryEl = $('#search-history');
-var currentDay = moment().format('M/DD/YYYY');
-var searchHistoryArray = loadSearchHistory();
-const weatherIconUrl = 'http://openweathermap.org/img/wn/';
+var city = document.querySelector('#city')
+var submit = document.querySelector('.btn')
 
-function saveSearchHistory() {
-    localStorage.setItem('search history', JSON.stringify(searchHistoryArray));
-    console.log(city)
-};
+function getCurrentWeather() {
+	var getUrlCurrent = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=${key}`;
 
-function loadSearchHistory() {
-    var searchHistoryArray = JSON.parse(localStorage.getItem('search history'));
+	$(cardTodayBody).empty();
 
-    if (!searchHistoryArray) {
-        searchHistoryArray = {
-            searchedCity: [],
-        };
-    } else {
-        for (var i = 0; i < searchHistoryArray.searchedCity.length; i++) {
-            searchHistoryEl(searchHistoryArray.searchedCity[i]);
-        }
-    }
-    return searchHistoryArray;
-}
+	$.ajax({
+		url: getUrlCurrent,
+		method: 'GET',
+	}).then(function (response) {
+		$('.cardTodayCityName').text(response.name);
+		$('.cardTodayDate').text(date);
+		//Icons
+		$('.icons').attr('src', `https://openweathermap.org/img/wn/${response.weather[0].icon}@2x.png`);
+		// Temperature
+		var pEl = $('<p>').text(`Temperature: ${response.main.temp} °F`);
+		cardTodayBody.append(pEl);
+		//Feels Like
+		var pElTemp = $('<p>').text(`Feels Like: ${response.main.feels_like} °F`);
+		cardTodayBody.append(pElTemp);
+		//Humidity
+		var pElHumid = $('<p>').text(`Humidity: ${response.main.humidity} %`);
+		cardTodayBody.append(pElHumid);
+		//Wind Speed
+		var pElWind = $('<p>').text(`Wind Speed: ${response.wind.speed} MPH`);
+		cardTodayBody.append(pElWind);
+		//Set the lat and long from the searched city
+		var cityLon = response.coord.lon;
+		// console.log(cityLon);
+		var cityLat = response.coord.lat;
+		// console.log(cityLat);
 
-function searchHistory(city) {
-    var searchHistoryBtn = $('<button>')
-        .addClass('btn')
-        .text(city)
-        .on('click', function () {
-            $('#current-weather').remove();
-            $('#five-day').empty();
-            $('#five-day-header').remove();
-            getWeather(city);
-        })
-        .attr({
-            type: 'button'
-        });
-    searchHistoryEl.append(searchHistoryBtn);
-}
-
+		var getUrlUvi = `https://api.openweathermap.org/data/2.5/onecall?lat=${cityLat}&lon=${cityLon}&exclude=hourly,daily,minutely&appid=${key}`;
+    })};
